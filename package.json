@@ -4,8 +4,17 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "dev:frontend": "yarn workspace slack-fe dev",
+    "dev:backend": "yarn workspace slack-be dev",
+    "dev": "concurrently \"yarn dev:frontend\" \"yarn dev:backend\""
+  },
   "workspaces": [
-    "backend",
-    "frontend"
-  ]
+    "slack-be",
+    "slack-fe"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
 }
