@@ -1,6 +1,8 @@
 import DotEnv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
+import { router } from "./router";
+import CookieParser from "cookie-parser";
 
 DotEnv.config({
   path: ".env.local",
@@ -9,6 +11,9 @@ DotEnv.config({
 const PORT = process.env.PORT || 4000;
 
 const App = express();
+App.use(CookieParser());
+
+App.use("/", router);
 
 (async () => {
   try {

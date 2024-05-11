@@ -6,6 +6,28 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    email: {
+      type: String,
+      required: true,
+    },
+    DisplayName: {
+      type: String,
+      required: true,
+    },
+    picture: {
+      type: String,
+      required: true,
+    },
+    UserSub: {
+      type: String,
+      required: true,
+    },
+    family_name: {
+      type: String,
+    },
+    given_name: {
+      type: String,
+    },
   } as const,
   {
     _id: false,
