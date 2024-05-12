@@ -28,6 +28,70 @@ import {
 const cryptr = new Cryptr(process.env.SECRET!);
 export const router = Router();
 
+router.post("/send/:channelID", ValidateAuth, async (req, res) => {
+  const channelID = req.params.channelID;
+  if (!channelID) {
+    return res.status(400).json({
+      error: "Channel ID is required",
+    });
+  }
+  if (!req.user.accessToken) {
+    return res.status(400).json({
+      error: "User not connected to Slack Account",
+    });
+  }
+  try {
+    const SendRequest = await axios.post(
+      "https://slack.com/api/chat.postMessage",
+      null,
+      {
+        params: {
+          channel: channelID,
+          blocks: JSON.stringify([
+            {
+              type: "section",
+              text: {
+                type: "mrkdwn",
+                text: `Hello \n My Full Name is *${req.user.displayName}* \n My Email is *mailto:${req.user.email}* \n Msg Sent From Slack API`,
+              },
+              accessory: {
+                type: "image",
+                image_url: req.user.picture,
+                alt_text: `${req.user.displayName} Image`,
+              },
+            },
+          ]),
+        },
+        headers: {
+          Authorization: `Bearer ${cryptr.decrypt(req.user.accessToken)}`,
+        },
+      }
+    );
+    if (SendRequest.status === 200) {
+      return res.status(201).json({
+        message: "Message Sent Successfully",
+      });
+    } else {
+      return res.status(500).json({
+        error: "Unable to send message to Slack",
+      });
+    }
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      if (e.status == 429) {
+        const retryAfter = e.response?.headers["Retry-After"];
+        return res.status(429).json({
+          error: "Rate Limit Exceeded",
+          retryAfter: retryAfter,
+        });
+      }
+      return res.status(500).json({
+        error: "Unable to send message to Slack",
+      });
+    }
+  }
+});
+
 //get list of authenticated channels from slack
 router.get("/channels", ValidateAuth, async (req, res) => {
   if (!req.user.accessToken) {
