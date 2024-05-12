@@ -21,6 +21,7 @@ Environment Variable Prefix with GOOGLE are Social login Credential
 Which are to be obtained from [https://console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
 
 Env Variable with SLACK belong with Slack APP integration and are required to add those from Slack App Integration page
+[https://api.slack.com/apps](https://api.slack.com/apps)
 
 SECRET is required for decrypting/encrypting access token
 

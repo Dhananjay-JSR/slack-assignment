@@ -4,10 +4,14 @@ Each Subdirectory contains their individual README.md file.
 
 # Subdirectories
 
-slack-fe
-slack-be
+1. slack-fe
+2. slack-be
 
 # How to Run as Yarn workspace from root directory
+
+```
+npm i -g yarn
+```
 
 ```bashq
 yarn
