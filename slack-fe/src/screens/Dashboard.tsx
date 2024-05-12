@@ -6,7 +6,6 @@ import { RootState } from "../store/store";
 import { Navigate } from "react-router-dom";
 import { logout } from "../store/AuthStore";
 import toast, { Toaster } from "react-hot-toast";
-import { AbourtError } from "../utils/Errors";
 import Loader from "../components/Loader";
 import { Navbar } from "../components/Navbar";
 import RevokeAccess from "../components/RevokeAccessBtn";
@@ -66,20 +65,14 @@ export default function Dashboard() {
           setIsLoading(false);
         }
       } catch (error) {
-        if (error instanceof AbourtError) {
-          return;
-        }
         if (isAxiosError(error)) {
+          toast.error(error.message);
           if (error.response?.status === 401) {
             dispatch(logout());
             return;
           }
           if (error.response?.status === 500) {
             toast.error("Server Unreachable");
-            return;
-          }
-          if (error.response?.status === 502) {
-            toast.error("Bad Gateway");
             return;
           }
         }

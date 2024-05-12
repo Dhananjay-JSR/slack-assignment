@@ -7,6 +7,9 @@
   "scripts": {
     "dev:frontend": "yarn workspace slack-fe dev",
     "dev:backend": "yarn workspace slack-be dev",
+    "start:frontend": "yarn workspace slack-fe build && yarn workspace slack-fe preview",
+    "start:backend": "yarn workspace slack-be start",
+    "start": "concurrently \"yarn start:frontend\" \"yarn start:backend\"",
     "dev": "concurrently \"yarn dev:frontend\" \"yarn dev:backend\""
   },
   "workspaces": [

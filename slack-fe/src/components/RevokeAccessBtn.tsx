@@ -43,13 +43,13 @@ export default function RevokeAccess({
           }
         } catch (e) {
           if (isAxiosError(e)) {
+            toast.error("Failed to Revoke Access");
             if (e.response?.status === 401) {
               dispatch(logout());
             }
             if (e.response?.status === 500) {
               toast.error("Server Unreachable");
             }
-            console.error(e.stack);
           }
         }
       }}

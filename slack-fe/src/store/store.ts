@@ -11,7 +11,7 @@ const localStorageMiddleware = createListenerMiddleware();
 
 localStorageMiddleware.startListening({
   matcher: isAnyOf(login, logout),
-  effect: (action, listenerApi) =>
+  effect: (_action, listenerApi) =>
     localStorage.setItem(
       STORE_KEY,
       JSON.stringify(

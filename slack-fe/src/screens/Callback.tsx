@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { login, logout } from "../store/AuthStore";
 
 export function Callback() {
-  const [searchParams, setSearchParam] = useSearchParams();
+  const [searchParams, _setSearchParam] = useSearchParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

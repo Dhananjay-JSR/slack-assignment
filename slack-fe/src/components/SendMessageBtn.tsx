@@ -31,6 +31,7 @@ export function SendMessageBtn({
           }
         } catch (e) {
           if (isAxiosError(e)) {
+            toast.error("Failed to Send Message", { id: Send_Message_ID });
             if (e.response?.status === 401) {
               dispatch(logout());
             }
