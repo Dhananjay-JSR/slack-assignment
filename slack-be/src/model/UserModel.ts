@@ -6,6 +6,10 @@ const UserSchema = new Schema(
       type: String,
       required: true,
     },
+    AccessToken: {
+      type: String,
+      default: null,
+    },
     email: {
       type: String,
       required: true,
@@ -24,9 +28,11 @@ const UserSchema = new Schema(
     },
     family_name: {
       type: String,
+      default: null,
     },
     given_name: {
       type: String,
+      default: null,
     },
   } as const,
   {
