@@ -8,6 +8,7 @@ export function Navbar({
   user: {
     user: {
       displayName: string;
+      picture: string;
     };
   } | null;
   isLoading: boolean;
