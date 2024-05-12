@@ -1,5 +1,7 @@
 # Slack Integration Backend
 
+Deployment URL = https://api-slack.jaay.fun
+
 create a duplicate of .env.example and rename it to .env
 
 ```
