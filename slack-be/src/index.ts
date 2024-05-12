@@ -1,17 +1,23 @@
-import DotEnv from "dotenv";
+import EnvParser from "./utils/EnvValidator";
 import express from "express";
 import mongoose from "mongoose";
-import { router } from "./router";
 import cors from "cors";
 import CookieParser from "cookie-parser";
+import Cryptr from "cryptr";
+import { AuthRouter } from "./router/AuthRouter";
+import { SlackRoutes } from "./router/SlackRouter";
 
-DotEnv.config({
-  path: ".env.local",
-});
-
+if (!EnvParser.success) {
+  // Throw error and exit if there is an issue with the environment variables
+  console.error(EnvParser.error.issues);
+  console.error("There is an error with the server environment variables");
+  process.exit(1);
+}
+export const Sign = new Cryptr(process.env.SECRET);
 const PORT = process.env.PORT || 3000;
 
 const App = express();
+
 App.use(
   cors({
     origin: process.env.FRONTEND_URL,
@@ -20,7 +26,8 @@ App.use(
 );
 App.use(CookieParser());
 
-App.use("/", router);
+App.use("/", AuthRouter);
+App.use("/", SlackRoutes);
 
 (async () => {
   try {
