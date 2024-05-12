@@ -5,7 +5,7 @@ import {
 } from "@reduxjs/toolkit";
 
 import AuthReducer, { login, logout } from "./AuthStore";
-import { STORE_KEY } from "../utils/constants";
+import { STORE_KEY } from "../utils/base";
 
 const localStorageMiddleware = createListenerMiddleware();
 

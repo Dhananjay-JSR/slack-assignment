@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { SERVER_URL } from "../utils/constants";
+import { SERVER_URL } from "../utils/base";
 
 export function GoogleSignInBtn() {
   return (
