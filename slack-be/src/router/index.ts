@@ -29,6 +29,56 @@ import AccessTokenValidator from "./utils/AccessTokenValidator";
 const cryptr = new Cryptr(process.env.SECRET!);
 export const router = Router();
 
+router.delete("/revoke", ValidateAuth, async (req, res) => {
+  if (!req.user.accessToken) {
+    return res.status(400).json({
+      error: "User not connected to Slack Account",
+    });
+  }
+  try {
+    const RevokeRequest = await axios.get("https://slack.com/api/auth.revoke", {
+      params: {
+        token: cryptr.decrypt(req.user.accessToken),
+      },
+    });
+    if (RevokeRequest.status == 200) {
+      const UpdateQuery = await UserModel.findOneAndUpdate(
+        {
+          _id: req.user.id,
+        },
+        {
+          AccessToken: null,
+        }
+      );
+      if (UpdateQuery) {
+        return res.json({
+          message: "Slack Account Disconnected Successfully",
+        });
+      } else {
+        return res.status(500).json({
+          error: "Unable to Disconnect Slack Account",
+        });
+      }
+    } else {
+      return res.status(500).json({
+        error: "Unable to Disconnect Slack Account",
+      });
+    }
+  } catch (e) {
+    if (e instanceof AxiosError) {
+      return res.status(500).json({
+        error: "Unable to Disconnect Slack Account",
+      });
+    }
+  }
+});
+
+router.get("/logout", ValidateAuth, async (req, res) => {
+  await lucia.invalidateSession(req.session.id);
+  const sessionCookie = lucia.createBlankSessionCookie();
+  res.cookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+  return res.redirect(process.env.FRONTEND_URL! + "/callback");
+});
 router.get("/profile", ValidateAuth, async (req: Request, res: Response) => {
   return res.json({
     user: {
@@ -222,8 +272,8 @@ router.get("/auth/slack/callback", ValidateAuth, async (req, res) => {
       error: AccessTokenData.error,
     });
   } else {
-    console.log("Access Token");
-    console.log(AccessTokenData.authed_user.access_token);
+    // console.log("Access Token");
+    // console.log(AccessTokenData.authed_user.access_token);
     const encryptedString = cryptr.encrypt(
       AccessTokenData.authed_user.access_token
     );
@@ -242,7 +292,8 @@ router.get("/auth/slack/callback", ValidateAuth, async (req, res) => {
     );
     if (UpdateQuery) {
       // Redirect to Home
-      return res.send("Slack Account Connected Successfully");
+      //   return res.send("Slack Account Connected Successfully");
+      return res.redirect(process.env.FRONTEND_URL + "/dashboard");
     } else {
       return res.status(500).json({
         error: "Unable to Connect Slack Account",
