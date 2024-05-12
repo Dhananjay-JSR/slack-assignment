@@ -24,10 +24,20 @@ import {
   SlackErrorAccessTokenResponse,
   SlackOKAccessTokenResponse,
 } from "./types/SlackAccessType";
+import AccessTokenValidator from "./utils/AccessTokenValidator";
 
 const cryptr = new Cryptr(process.env.SECRET!);
 export const router = Router();
 
+router.get("/profile", ValidateAuth, async (req: Request, res: Response) => {
+  return res.json({
+    user: {
+      displayName: req.user.displayName,
+      picture: req.user.picture,
+      isSlackConnected: req.user.accessToken ? true : false,
+    },
+  });
+});
 router.post("/send/:channelID", ValidateAuth, async (req, res) => {
   const channelID = req.params.channelID;
   if (!channelID) {
@@ -296,7 +306,10 @@ router.get("/auth/google/callback", async (req, res) => {
         sessionCookie.attributes
       );
       //   Redirect to Home
-      return res.send("Auth Suuccess");
+      //   return res.send("Auth Suuccess");
+      return res.redirect(
+        process.env.FRONTEND_URL + "/callback?session=" + session.id
+      );
     }
     // if User does not exist, Create User and Session
     const userId = generateIdFromEntropySize(10);
@@ -322,7 +335,10 @@ router.get("/auth/google/callback", async (req, res) => {
       sessionCookie.attributes
     );
     // Redirect to Home
-    return res.send("Auth Suuccess");
+    // return res.send("Auth Suuccess");
+    return res.redirect(
+      process.env.FRONTEND_URL + "/callback?session=" + session.id
+    );
   } catch (e) {
     if (e instanceof OAuth2RequestError) {
       // Oauth2 path error or invalid code
